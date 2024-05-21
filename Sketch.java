@@ -3,28 +3,35 @@ import processing.core.PApplet;
 public class Sketch extends PApplet {
 
   // Related arrays for the (x, y) coordinate of the snowflakes
-  float[] snowX = new float[42];
-  float[] snowY = new float[42];
+  float[] snowX = new float[40];
+  float[] snowY = new float[40];
+
+  // Array for hiding snowflakes
+  boolean [] blnHideSnow = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
   // Determining size of snowflakes
   int snowDiameter = 10;
 
   // Key values
-  boolean upPressed = false;
-  boolean downPressed = false;
-  boolean wPressed = false;
-  boolean sPressed = false;
-  boolean aPressed = false;
-  boolean dPressed = false;
+  boolean blnUpPressed = false;
+  boolean blnDownPressed = false;
+  boolean blnWPressed = false;
+  boolean blnSPressed = false;
+  boolean blnAPressed = false;
+  boolean blnDPressed = false;
+  boolean blnHit = false;
 
   // Initializing speed variables
   float fltCircleX = 0;
   float fltCircleY = 0;
-  float fltPlayerX = 0;
-  float fltPlayerY = 0;
+  float fltPlayerX = 10;
+  float fltPlayerY = 200;
 
   // Defining variables
-  int playerLives = 3;
+  int intLocation = 0;
+  int intPlayerLives = 3;
+  double dblClickingRadius = 15;
+  double dblRadius = 12;
 
   public void settings() {
     size(400, 400);
@@ -43,119 +50,148 @@ public class Sketch extends PApplet {
   public void draw() {
     background(0);
 
-    // Draw snow
-    snow();
-    
+    // Add hearts/life representatives 
+    fill(255, 79, 20);
+    if (intPlayerLives == 3) {
+      square(370, 0, 30);
+      square(370, 30, 30);
+      square(370, 60, 30);
+    } else if (intPlayerLives == 2) {
+      square(370, 0, 30);
+      square(370, 30, 30);
+    } else if (intPlayerLives == 1) {
+      square(370, 0, 30);
+    } 
+
     if(key == 'w' || key == 'W' || key == 's' || key == 'S' || key == 'a' || key == 'A' || key == 'd' || key == 'D' || keyCode == DOWN || keyCode == UP) {
       movingPlayer();
     }
-  }
+    
+    if (blnHit == true) {
+      blnHideSnow[intLocation] = true;
+    }
+
+    // Locate position of each snowflake
+    for (int i = 0; i < 40; i++) {  
+      // Sends touched snowflakes back up if player touches snowflake
+      if (dist(fltPlayerX, fltPlayerY, snowX[i], snowY[i]) <= dblRadius) {
+        intPlayerLives -= 1;
+        snowY[i] = 0;
+      }
+    }
+    
+    // Draw snow
+    snow();
+
+    // Create boundaries
+    if (fltPlayerX < 10) {
+      fltPlayerX = 10;
+    } else if (fltPlayerX > width - 10) {
+      fltPlayerX = width - 10;
+    } else if (fltPlayerY < 10) {
+      fltPlayerY = 10;
+    } else if (fltPlayerY > 390) {
+      fltPlayerY = 390;
+    }
+    
+    // Create game end
+    if (intPlayerLives == 0) {
+      background(255);
+      fill(255, 0, 0);
+      textSize(40);
+      text("Game Over!", 100, 200);
+      }
+    }
+
     private void movingPlayer() {
-      if (wPressed) {
+      if (blnWPressed) {
         fltPlayerY -= 2;
       }
-      else if (sPressed ) {
+      else if (blnSPressed ) {
         fltPlayerY += 2;
       }
-      else if (aPressed) {
+      else if (blnAPressed) {
         fltPlayerX -= 2;
       }
-      else if (dPressed) {
+      else if (blnDPressed) {
         fltPlayerX += 2;
       }
 
       // Add player representative
       fill(128, 191, 242);
       circle(fltPlayerX, fltPlayerY, 20);
-
-      // Create boundaries
-      fltPlayerX = Math.max(20, Math.min(fltPlayerX, width - 20));
-      fltPlayerY = Math.max(20, Math.min(fltPlayerY, height - 20));
-
-      // Check for collision with snowflakes
-      for (int i = 0; i < 42; i++) {
-      if (snowY[i] >= height - 10 && Math.abs(snowX[i] - fltPlayerX) < 20 + 10) {
-          playerLives--;
-          if (playerLives == 0) {
-              background(255);
-              System.out.println("Game Over!");
-          }
-      }
-    }
-      if (playerLives == 2 || playerLives == 1) {
-        
-      }
   }
   
   public void snow(){
     fill(255);
     for(int i = 0; i < snowX.length; i++) {
       circle(snowX[i], snowY[i], snowDiameter);
-
       snowY[i] += 2;
 
     // Reset snowflakes
     if (snowY[i] > height) {
       snowY[i] = 0;
       }
-    }
 
     // Make snow fall faster
-    if(downPressed) {
-      for(int i = 0; i < snowX.length; i++) {
-        circle(snowX[i], snowY[i], snowDiameter);
-          snowY[i] += 5;
-      }
-    } else if(upPressed) {
-      for(int i = 0; i < snowX.length; i++) {
-        circle(snowX[i], snowY[i], snowDiameter);
-          snowY[i] --;
+    if(blnDownPressed) {
+      circle(snowX[i], snowY[i], snowDiameter);
+        snowY[i] += 5;
+      } else if(blnUpPressed) {
+      circle(snowX[i], snowY[i], snowDiameter);
+        snowY[i] --;
       } 
     }
   }
 
   public void keyPressed() {
     if (keyCode == DOWN) {
-      downPressed = true;
+      blnDownPressed = true;
     }
     else if (keyCode == UP) {
-      upPressed = true;
+      blnUpPressed = true;
     }
     if (key == 'w' || key == 'W') {
-      wPressed = true;
+      blnWPressed = true;
     }
     else if (key == 's' || key == 'S') {
-      sPressed = true;
+      blnSPressed = true;
     }
     else if (key == 'a' || key == 'A') {
-      aPressed = true;
+      blnAPressed = true;
     }
     else if (key == 'd' || key == 'D') {
-      dPressed = true;
+      blnDPressed = true;
     }
   }
   
   public void keyReleased() {
     if (keyCode == DOWN) {
-      downPressed = false;
+      blnDownPressed = false;
      }
     else if (keyCode == UP) {
-      upPressed = false;
+      blnUpPressed = false;
     }
 
     if (key == 'w' || key == 'W') {
-      wPressed = false;
+      blnWPressed = false;
     }
     else if (key == 's' || key == 'S') {
-      sPressed = false;
+      blnSPressed = false;
     }
     else if (key == 'a' || key == 'A') {
-      aPressed = false;
+      blnAPressed = false;
     }
     else if (key == 'd' || key == 'D') {
-      dPressed = false;
+      blnDPressed = false;
     }
   }
 
-    
+  public void mousePressed() {
+    for (int i = 0; i < 40; i++) {
+      if (dist(mouseX, mouseY, snowX[i], snowY[i]) < dblClickingRadius) {
+        blnHit = true;
+      }
+   }
+  } 
 }
