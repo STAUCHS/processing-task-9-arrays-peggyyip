@@ -10,7 +10,7 @@ public class Sketch extends PApplet {
   boolean[] blnHideSnow = new boolean[40];
 
   // Determining size of snowflakes
-  int snowDiameter = 10;
+  int snowDiameter = 15;
 
   // Key values
   boolean blnUpPressed = false;
@@ -30,7 +30,7 @@ public class Sketch extends PApplet {
   // Defining variables
   int intLocation = 0;
   int intPlayerLives = 3;
-  double dblClickingRadius = 15;
+  double dblClickingRadius = 20;
   double dblRadius = 12;
 
   public void settings() {
@@ -47,6 +47,12 @@ public class Sketch extends PApplet {
     }
   }
 
+  /**
+  * Creates player, snowfall, and hearts/lives
+  *
+  * @return void
+  * @author: P. Yip
+  */
   public void draw() {
     background(0);
 
@@ -103,25 +109,37 @@ public class Sketch extends PApplet {
       }
     }
 
-    private void movingPlayer() {
-      if (blnWPressed) {
-        fltPlayerY -= 2;
-      }
-      else if (blnSPressed ) {
-        fltPlayerY += 2;
-      }
-      else if (blnAPressed) {
-        fltPlayerX -= 2;
-      }
-      else if (blnDPressed) {
-        fltPlayerX += 2;
-      }
+  /**
+  * Matches WASD key movement with movement of player
+  *
+  * @return void
+  * @author: P. Yip
+  */
+  private void movingPlayer() {
+    if (blnWPressed) {
+      fltPlayerY -= 2;
+    }
+    if (blnSPressed ) {
+      fltPlayerY += 2;
+    }
+    if (blnAPressed) {
+      fltPlayerX -= 2;
+    }
+    if (blnDPressed) {
+      fltPlayerX += 2;
+    }
 
-      // Add player representative
-      fill(128, 191, 242);
-      circle(fltPlayerX, fltPlayerY, 20);
+    // Add player representative
+    fill(128, 191, 242);
+    circle(fltPlayerX, fltPlayerY, 20);
   }
-  
+
+  /**
+  * Create snow and reset it to top for each new cycle. Make snow fall faster/slower when down/up keys are pressed.
+  *
+  * @return void
+  * @author: P. Yip
+  */
   public void snow(){
     fill(255);
     for(int i = 0; i < snowX.length; i++) {
@@ -153,6 +171,12 @@ public class Sketch extends PApplet {
     } 
   }
 
+  /**
+  * Sets pressed keys (up/down/W/A/S/D) to 'true' 
+  *
+  * @return void
+  * @author: P. Yip
+  */
   public void keyPressed() {
     if (keyCode == DOWN) {
       blnDownPressed = true;
@@ -173,7 +197,13 @@ public class Sketch extends PApplet {
       blnDPressed = true;
     }
   }
-  
+
+  /**
+  * Sets released keys (up/down/W/A/S/D) to 'false' 
+  *
+  * @return void
+  * @author: P. Yip
+  */
   public void keyReleased() {
     if (keyCode == DOWN) {
       blnDownPressed = false;
@@ -196,6 +226,12 @@ public class Sketch extends PApplet {
     }
   }
 
+  /**
+  * Makes snowflakes disappear when pressed
+  *
+  * @return void
+  * @author: P. Yip
+  */
   public void mousePressed() {
     for (int i = 0; i < 40; i++) {
       if (dist(mouseX, mouseY, snowX[i], snowY[i]) < dblClickingRadius) {
