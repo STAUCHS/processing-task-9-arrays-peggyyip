@@ -7,7 +7,7 @@ public class Sketch extends PApplet {
   float[] snowY = new float[40];
 
   // Array for hiding snowflakes
-  boolean [] blnHideSnow = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+  boolean[] blnHideSnow = new boolean[40];
 
   // Determining size of snowflakes
   int snowDiameter = 10;
@@ -125,23 +125,32 @@ public class Sketch extends PApplet {
   public void snow(){
     fill(255);
     for(int i = 0; i < snowX.length; i++) {
+      if (!blnHideSnow[i]) {
       circle(snowX[i], snowY[i], snowDiameter);
       snowY[i] += 2;
 
-    // Reset snowflakes
-    if (snowY[i] > height) {
-      snowY[i] = 0;
-      }
+        // Reset snowflakes
+        if (snowY[i] > height) {
+          snowY[i] = 0;
+        }
 
-    // Make snow fall faster
-    if(blnDownPressed) {
-      circle(snowX[i], snowY[i], snowDiameter);
-        snowY[i] += 5;
-      } else if(blnUpPressed) {
-      circle(snowX[i], snowY[i], snowDiameter);
-        snowY[i] --;
-      } 
-    }
+        // Check if snowflake is clicked
+        if (mousePressed) {
+          if (dist(snowX[i], snowY[i], mouseX, mouseY) < snowDiameter / 2) {
+            blnHideSnow[i] = true;
+          }
+        }
+
+        // Make snow fall faster
+        if(blnDownPressed) {
+          circle(snowX[i], snowY[i], snowDiameter);
+          snowY[i] += 5;
+        } else if(blnUpPressed) {
+          circle(snowX[i], snowY[i], snowDiameter);
+          snowY[i] --;
+        } 
+      }
+    } 
   }
 
   public void keyPressed() {
@@ -192,6 +201,6 @@ public class Sketch extends PApplet {
       if (dist(mouseX, mouseY, snowX[i], snowY[i]) < dblClickingRadius) {
         blnHit = true;
       }
-   }
+    }
   } 
 }
