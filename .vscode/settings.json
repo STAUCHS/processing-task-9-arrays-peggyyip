@@ -1,0 +1,12 @@
+{
+    "java.project.referencedLibraries": {
+        "include": [
+            "lib/**/*.jar",
+            "/Users/yipp2791/Desktop/11 Computer Science/core.jar",
+            "c:\\Users\\Administrator\\Downloads\\core.jar"
+        ],
+        "exclude": [
+            "lib/repl_core.jar"
+        ]
+    }
+}
