@@ -1,5 +1,9 @@
 import processing.core.PApplet;
-
+/**
+ * Creating a snowfall game where if the player touches the snowflake, they lose 1/3 lives
+ * @author: P. Yip
+ *
+ */
 public class Sketch extends PApplet {
 
   // Related arrays for the (x, y) coordinate of the snowflakes
